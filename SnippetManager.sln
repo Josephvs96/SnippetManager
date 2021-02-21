@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnippetManager", "SnippetManager\SnippetManager.csproj", "{0C85323F-526F-4FD7-BA88-732E351AE485}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0C85323F-526F-4FD7-BA88-732E351AE485}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C85323F-526F-4FD7-BA88-732E351AE485}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C85323F-526F-4FD7-BA88-732E351AE485}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C85323F-526F-4FD7-BA88-732E351AE485}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D32552AD-CB2C-499A-BB6E-6C1F7E052D5B}
+	EndGlobalSection
+EndGlobal

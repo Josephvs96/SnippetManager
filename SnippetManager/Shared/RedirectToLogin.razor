@@ -1,0 +1,25 @@
+﻿@inject NavigationManager nav
+
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateTask;
+        if (authState?.User?.Identity is null || !authState.User.Identity.IsAuthenticated)
+        {
+            var returnUrl = "~/ " + nav.ToBaseRelativePath(nav.Uri);
+            if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                nav.NavigateTo("Identity/Account/Login", true);
+            }
+            else
+            {
+                nav.NavigateTo($"Identity/Account/Login?returnUrl={returnUrl}", true);
+            }
+        }
+    }
+}

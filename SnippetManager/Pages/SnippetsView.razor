@@ -1,0 +1,27 @@
+﻿@attribute [Authorize]
+@page "/SnippetsView"
+@inject SnippetDataAccess _sdb
+@inject AuthenticationStateProvider context
+@inject UserManager<IdentityUser> UserManager;
+
+<h3>SnippetsView</h3>
+
+<table>
+    <tr>
+        @foreach (var item in _sdb.Snippets)
+        {
+            @item.Code;
+        }
+    </tr>
+</table>
+
+
+@code {
+    protected override void OnInitialized()
+    {
+        var user = context.GetAuthenticationStateAsync().Result.User;
+        _sdb.GetSnippetsById(UserManager.GetUserId(user));
+    }
+}
+
+
