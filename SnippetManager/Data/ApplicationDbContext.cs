@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using SnippetManager.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -13,7 +13,5 @@ namespace SnippetManager.Data
             : base(options)
         {
         }
-        public DbSet<SnippetModel> Snippets { get; set; }
-        public DbSet<EnvironmentModel> Environments { get; set; }
     }
 }

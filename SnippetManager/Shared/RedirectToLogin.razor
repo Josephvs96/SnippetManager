@@ -11,7 +11,7 @@
         var authState = await AuthenticationStateTask;
         if (authState?.User?.Identity is null || !authState.User.Identity.IsAuthenticated)
         {
-            var returnUrl = "~/ " + nav.ToBaseRelativePath(nav.Uri);
+            var returnUrl = "~/" + nav.ToBaseRelativePath(nav.Uri);
             if (string.IsNullOrWhiteSpace(returnUrl))
             {
                 nav.NavigateTo("Identity/Account/Login", true);
