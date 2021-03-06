@@ -8,6 +8,12 @@
 {
     <p><em>Loading...</em></p>
 }
+else if (_snippets.Count == 0)
+{
+    <div class="alert alert-info">
+        <p class="text-danger font-weight-bolder">No records to show.</p>
+    </div>
+}
 else
 {
     <MudTable Items="@_snippets" Dense="@dense" Hover="true" Filter="new Func<SnippetModel,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
