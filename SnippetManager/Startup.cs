@@ -46,8 +46,9 @@ namespace SnippetManager
 
             services.AddScoped<ISnippetDataAccess, SnippetDataAccess>();
             services.AddScoped<IEnvironmentsDataAccess, EnvironmentsDataAccess>();
-
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddMudServices();
+            services.AddScoped<ClipboardService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +57,7 @@ namespace SnippetManager
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {

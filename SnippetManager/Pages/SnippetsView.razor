@@ -3,12 +3,7 @@
 @inject ISnippetDataAccess _sdb
 @inject AuthenticationStateProvider context
 @inject UserManager<IdentityUser> UserManager;
-
-<style>
-    .monaco-editor-container {
-        height: 450px;
-    }
-</style>
+@inject ClipboardService Clipboard
 
 
 @if (_snippets == null)
@@ -23,57 +18,67 @@ else if (_snippets.Count == 0)
 }
 else
 {
-    <div class="container-fluid">
-        <div class="row">
+    <MudContainer Fixed="true" Style="overflow:hidden; position:relative;">
+        <MudTable Items="@_snippets" Dense="true" Hover="true" FixedHeader="true" Filter="new Func<SnippetModel,bool>(FilterFunc)" @bind-SelectedItem="selectedItem" Style="overflow:hidden; position:relative;">
+            <ToolBarContent>
+                <MudFab Color="Color.Success" Icon="@Icons.Material.Filled.Add" Size="Size.Small" IconSize="Size.Medium" Label="Add Snippet" Class="ma-2" Style="outline:none" />
+                <MudToolBarSpacer />
+                <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+            </ToolBarContent>
+            <HeaderContent>
+                <MudTh>Description</MudTh>
+                <MudTh>Environment</MudTh>
+                <MudTh>OS</MudTh>
+                <MudTh></MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate>
+                <MudTd DataLabel="Description">@context.Name</MudTd>
+                <MudTd DataLabel="Environment">@context.Environment.Name</MudTd>
+                <MudTd DataLabel="OS">@context.Environment.OSName</MudTd>
+                <MudTd>
+                    <MudTooltip Text="Show Code" Placement="Placement.Start">
+                        <MudIconButton Icon="@Icons.Material.Rounded.Code" Size="Size.Small" OnClick="()=> GetValue(context.Code)" Style="outline:none"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+                <MudTd>
+                    <MudTooltip Text="Edit this snippet" Placement="Placement.Start">
+                        <MudIconButton Icon="@Icons.Material.Rounded.Edit" Size="Size.Small" Style="outline:none"></MudIconButton>
+                    </MudTooltip>
+                    <MudTooltip Text="Delete this snippet" Placement="Placement.Start">
+                        <MudIconButton Icon="@Icons.Material.Rounded.Delete" Size="Size.Small" Style="outline:none"></MudIconButton>
+                    </MudTooltip>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                @if (_snippets.Count > 10)
+                    {
+                    <MudTablePager PageSizeOptions="numOfRowsPerPage" />
+                    }
+            </PagerContent>
+        </MudTable>
+        @*<MudSwitch @bind-Checked="@dense" Color="Color.Primary">Dense</MudSwitch>*@
 
-        </div>
-        <div class="row flex-row" style="margin-bottom:-10px;">
-            <div class="col">
-                <MudTable Items="@_snippets" Dense="true" Hover="true" FixedHeader="true" Filter="new Func<SnippetModel,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-                    <ToolBarContent>
-                        <MudFab Color="Color.Success" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" IconSize="Size.Medium" Label="Add Snippet" Class="ma-2" Style="outline:none" />
-                        <MudToolBarSpacer />
-                        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-                    </ToolBarContent>
-                    <HeaderContent>
-                        <MudTh>Description</MudTh>
-                        <MudTh>Environment</MudTh>
-                        <MudTh>OS</MudTh>
-                        <MudTh></MudTh>
-                        <MudTh></MudTh>
-                    </HeaderContent>
-                    <RowTemplate>
-                        <MudTd DataLabel="Description">@context.Name</MudTd>
-                        <MudTd DataLabel="Environment">@context.Environment.Name</MudTd>
-                        <MudTd DataLabel="OS">@context.Environment.OSName</MudTd>
-                        <MudTd>
-                            <MudTooltip Text="Show Code" Placement="Placement.Start">
-                                <MudIconButton Icon="@Icons.Material.Rounded.Code" Size="Size.Small" OnClick="()=> GetValue(context.Code)" Style="outline:none"></MudIconButton>
-                            </MudTooltip>
-                        </MudTd>
-                        <MudTd>
-                            <MudTooltip Text="Edit this snippet" Placement="Placement.Start">
-                                <MudIconButton Icon="@Icons.Material.Rounded.Edit" Size="Size.Small" Style="outline:none"></MudIconButton>
-                            </MudTooltip>
-                            <MudTooltip Text="Delete this snippet" Placement="Placement.Start">
-                                <MudIconButton Icon="@Icons.Material.Rounded.Delete" Size="Size.Small" Style="outline:none"></MudIconButton>
-                            </MudTooltip>
-                        </MudTd>
-                    </RowTemplate>
-                    <PagerContent>
-                        @if (_snippets.Count > 10)
-                            {
-                            <MudTablePager PageSizeOptions="numOfRowsPerPage" />
-                            }
-                    </PagerContent>
-                </MudTable>
-                @*<MudSwitch @bind-Checked="@dense" Color="Color.Primary">Dense</MudSwitch>*@
+
+        <MudOverlay @bind-Visible="isVisible" Absolute="true" DarkBackground="true" AutoClose="false">
+            <MudDivider Class="m-2"></MudDivider>
+            <MonacoEditor CssClass="editor-css-class" @ref="_editor" Id="code-editor" ConstructionOptions="EditorConstructionOptions" OnDidInit="LoadCode"></MonacoEditor>
+            <MudDivider Class="m-2"></MudDivider>
+            <div class="input-group d-flex justify-content-center">
+                <MudChip Color="Color.Error" OnClick="@ToggleOverlay">Close</MudChip>
+                <MudChip Color="Color.Success" OnClick="@CopyToClipboard">@copy</MudChip>
             </div>
-            <div class="col">
-                <MonacoEditor @ref="_editor" Id="code-editor" ConstructionOptions="EditorConstructionOptions" OnDidInit="LoadCode"></MonacoEditor>
+        </MudOverlay>
+
+
+
+    </MudContainer>
+    @*<div class="row justify-content-md-center align-self-md-center" style="margin-top:5px;">
+            <div class="col-md-auto" style="width:100%">
+                <MonacoEditor CssClass="editor-css-class" @ref="_editor" Id="code-editor" ConstructionOptions="EditorConstructionOptions" OnDidInit="LoadCode"></MonacoEditor>
             </div>
-        </div>
-    </div>
+        </div>*@
+
 }
 
 @code {
@@ -81,12 +86,17 @@ else
     private string searchString = "";
     private SnippetModel selectedItem = null;
     private HashSet<SnippetModel> selectedItems = new HashSet<SnippetModel>();
-    private MonacoEditor _editor { get; set; }
+    private MonacoEditor _editor { get; set; } = new MonacoEditor();
     private string code = "";
+    private string copy = "Copy Code";
 
-    public SnippetsView()
+    private bool isVisible;
+
+    public void ToggleOverlay()
     {
-        _editor = new MonacoEditor();
+        isVisible = !isVisible;
+        StateHasChanged();
+        copy = "Copy Code";
     }
 
     int[] numOfRowsPerPage = new int[3] { 10, 15, 20 };
@@ -97,7 +107,6 @@ else
 
         _snippets = await _sdb.GetSnippetsById(UserManager.GetUserId(user));
     }
-
 
     private bool FilterFunc(SnippetModel snippet)
     {
@@ -123,6 +132,7 @@ else
     {
         this.code = code;
         await _editor.SetValue(code);
+        ToggleOverlay();
     }
 
     private async Task LoadCode()
@@ -148,6 +158,33 @@ else
             Minimap = new EditorMinimapOptions { Enabled = false },
             SelectionClipboard = true,
         };
+    }
+
+    async Task ReadFromClipboard()
+    {
+        // Reading from the clipboard may be denied, so you must handle the exception
+        try
+        {
+            //text = await Clipboard.ReadTextAsync();
+        }
+        catch
+        {
+            Console.WriteLine("Cannot read from clipboard");
+        }
+    }
+
+    async Task CopyToClipboard()
+    {
+        // Writing to the clipboard may be denied, so you must handle the exception
+        try
+        {
+            await Clipboard.WriteTextAsync(code);
+            copy = "Copied!";
+        }
+        catch
+        {
+            Console.WriteLine("Cannot write text to clipboard");
+        }
     }
 }
 

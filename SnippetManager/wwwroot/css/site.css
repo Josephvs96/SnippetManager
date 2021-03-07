@@ -136,7 +136,7 @@ app {
         top: 0.5rem;
     }
 
-@media (max-width: 767.98px) {
+@media (max-width: 380px) {
     .main .top-row:not(.auth) {
         display: none;
     }
@@ -148,12 +148,86 @@ app {
     .main .top-row a, .main .top-row .btn-link {
         margin-left: 0;
     }
+
+    .monaco-editor-container {
+        height: 250px;
+        width: 300px;
+        border: 1px solid gray;
+    }
+
+    .decorationGlyphMarginClass {
+        background: red;
+    }
+
+    .decorationContentClass {
+        background: lightblue;
+    }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 380px) {
+    .main .top-row:not(.auth) {
+        display: none;
+    }
+
+    .main .top-row.auth {
+        justify-content: space-between;
+    }
+
+    .main .top-row a, .main .top-row .btn-link {
+        margin-left: 0;
+    }
+
+    .monaco-editor-container {
+        height: 250px;
+        width: 350px;
+        border: 1px solid gray;
+    }
+
+    .decorationGlyphMarginClass {
+        background: red;
+    }
+
+    .decorationContentClass {
+        background: lightblue;
+    }
+}
+
+@media (min-width: 600px) {
+    .main .top-row:not(.auth) {
+        display: none;
+    }
+
+    .main .top-row.auth {
+        justify-content: space-between;
+    }
+
+    .main .top-row a, .main .top-row .btn-link {
+        margin-left: 0;
+    }
+
+    .monaco-editor-container {
+        height: 300px;
+        width: 580px;
+        border: 1px solid gray;
+    }
+
+    .decorationGlyphMarginClass {
+        background: red;
+    }
+
+    .decorationContentClass {
+        background: lightblue;
+    }
+}
+
+@media (min-width: 800px) {
     app {
         flex-direction: row;
         height: 99.9vh;
+    }
+
+    .main .top-row.auth {
+        justify-content: flex-end;
     }
 
     .sidebar {
@@ -180,5 +254,19 @@ app {
     .sidebar .collapse {
         /* Never collapse the sidebar for wide screens */
         display: block;
+    }
+
+    .monaco-editor-container {
+        height: 300px;
+        width: 768px;
+        border: 1px solid gray;
+    }
+
+    .decorationGlyphMarginClass {
+        background: red;
+    }
+
+    .decorationContentClass {
+        background: lightblue;
     }
 }
