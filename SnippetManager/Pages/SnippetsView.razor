@@ -4,6 +4,13 @@
 @inject AuthenticationStateProvider context
 @inject UserManager<IdentityUser> UserManager;
 
+<style>
+    .monaco-editor-container {
+        height: 450px;
+    }
+</style>
+
+
 @if (_snippets == null)
 {
     <p><em>Loading...</em></p>
@@ -16,48 +23,82 @@ else if (_snippets.Count == 0)
 }
 else
 {
-    <MudTable Items="@_snippets" Dense="@dense" Hover="true" FixedHeader="true" Filter="new Func<SnippetModel,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
-        <ToolBarContent>
-            <MudText Typo="Typo.h6">Code Snippets</MudText>
-            <MudToolBarSpacer />
-            <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
-        </ToolBarContent>
-        <HeaderContent>
-            <MudTh>Description</MudTh>
-            <MudTh>Code Snippet</MudTh>
-            <MudTh>Environment</MudTh>
-            <MudTh>OS</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Description">@context.Name</MudTd>
-            <MudTd DataLabel="Code Snippet">@context.Code</MudTd>
-            <MudTd DataLabel="Environment">@context.Environment.Name</MudTd>
-            <MudTd DataLabel="OS">@context.Environment.OSName</MudTd>
-        </RowTemplate>
-        <PagerContent>
-            <MudTablePager />
-        </PagerContent>
-    </MudTable>
-    <MudSwitch @bind-Checked="@dense" Color="Color.Secondary">Dense</MudSwitch>
+    <div class="container-fluid">
+        <div class="row">
 
+        </div>
+        <div class="row flex-row" style="margin-bottom:-10px;">
+            <div class="col">
+                <MudTable Items="@_snippets" Dense="true" Hover="true" FixedHeader="true" Filter="new Func<SnippetModel,bool>(FilterFunc)" @bind-SelectedItem="selectedItem">
+                    <ToolBarContent>
+                        <MudFab Color="Color.Success" Icon="@Icons.Material.Filled.Add" Size="Size.Medium" IconSize="Size.Medium" Label="Add Snippet" Class="ma-2" Style="outline:none" />
+                        <MudToolBarSpacer />
+                        <MudTextField @bind-Value="searchString" Placeholder="Search" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+                    </ToolBarContent>
+                    <HeaderContent>
+                        <MudTh>Description</MudTh>
+                        <MudTh>Environment</MudTh>
+                        <MudTh>OS</MudTh>
+                        <MudTh></MudTh>
+                        <MudTh></MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Description">@context.Name</MudTd>
+                        <MudTd DataLabel="Environment">@context.Environment.Name</MudTd>
+                        <MudTd DataLabel="OS">@context.Environment.OSName</MudTd>
+                        <MudTd>
+                            <MudTooltip Text="Show Code" Placement="Placement.Start">
+                                <MudIconButton Icon="@Icons.Material.Rounded.Code" Size="Size.Small" OnClick="()=> GetValue(context.Code)" Style="outline:none"></MudIconButton>
+                            </MudTooltip>
+                        </MudTd>
+                        <MudTd>
+                            <MudTooltip Text="Edit this snippet" Placement="Placement.Start">
+                                <MudIconButton Icon="@Icons.Material.Rounded.Edit" Size="Size.Small" Style="outline:none"></MudIconButton>
+                            </MudTooltip>
+                            <MudTooltip Text="Delete this snippet" Placement="Placement.Start">
+                                <MudIconButton Icon="@Icons.Material.Rounded.Delete" Size="Size.Small" Style="outline:none"></MudIconButton>
+                            </MudTooltip>
+                        </MudTd>
+                    </RowTemplate>
+                    <PagerContent>
+                        @if (_snippets.Count > 10)
+                            {
+                            <MudTablePager PageSizeOptions="numOfRowsPerPage" />
+                            }
+                    </PagerContent>
+                </MudTable>
+                @*<MudSwitch @bind-Checked="@dense" Color="Color.Primary">Dense</MudSwitch>*@
+            </div>
+            <div class="col">
+                <MonacoEditor @ref="_editor" Id="code-editor" ConstructionOptions="EditorConstructionOptions" OnDidInit="LoadCode"></MonacoEditor>
+            </div>
+        </div>
+    </div>
 }
 
-
-
-
 @code {
-
-    private bool dense = false;
     private List<SnippetModel> _snippets;
     private string searchString = "";
     private SnippetModel selectedItem = null;
     private HashSet<SnippetModel> selectedItems = new HashSet<SnippetModel>();
+    private MonacoEditor _editor { get; set; }
+    private string code = "";
+
+    public SnippetsView()
+    {
+        _editor = new MonacoEditor();
+    }
+
+    int[] numOfRowsPerPage = new int[3] { 10, 15, 20 };
+
     protected override async Task OnInitializedAsync()
     {
         var user = context.GetAuthenticationStateAsync().Result.User;
 
         _snippets = await _sdb.GetSnippetsById(UserManager.GetUserId(user));
     }
+
+
     private bool FilterFunc(SnippetModel snippet)
     {
         if (string.IsNullOrWhiteSpace(searchString))
@@ -71,6 +112,42 @@ else
         if ($"{snippet.Code} {snippet.Name} {snippet.Environment.Name} {snippet.Environment.OSName}".Contains(searchString))
             return true;
         return false;
+    }
+
+    private async Task SetValue()
+    {
+        throw new NotImplementedException();
+    }
+
+    private async Task GetValue(string code)
+    {
+        this.code = code;
+        await _editor.SetValue(code);
+    }
+
+    private async Task LoadCode()
+    {
+        await _editor.SetValue(code);
+    }
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            AutomaticLayout = false,
+            Theme = "vs",
+            Language = "csharp",
+            GlyphMargin = true,
+            AutoIndent = true,
+            Contextmenu = true,
+            FormatOnType = true,
+            SmoothScrolling = true,
+            ScrollBeyondLastLine = false,
+            ReadOnly = true,
+            DetectIndentation = true,
+            Minimap = new EditorMinimapOptions { Enabled = false },
+            SelectionClipboard = true,
+        };
     }
 }
 
