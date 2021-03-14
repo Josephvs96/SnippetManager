@@ -20,6 +20,7 @@ namespace SnippetManagerData.Data
         {
             return await _db.Snippets.Where(snippet => snippet.UserID == id)
                                              .Include(snippet => snippet.Environment)
+                                             .Include(os => os.OperatingSystem)
                                              .ToListAsync();
         }
 
@@ -35,10 +36,24 @@ namespace SnippetManagerData.Data
             await _db.SaveChangesAsync();
         }
 
+        public async Task UpdateSnippet(SnippetModel snippet)
+        {
+            _db.Snippets.Update(snippet);
+            await _db.SaveChangesAsync();
+        }
+
         public async Task DeleteSnippet(SnippetModel snippet)
         {
             _db.Snippets.Remove(snippet);
             await _db.SaveChangesAsync();
+        }
+
+        public async Task<List<string>> GetOSinSnippetsById(string id)
+        {
+            return await _db.Snippets.Where(snippet => snippet.UserID == id)
+                                              .Include(os => os.OperatingSystem)
+                                              .Select(x => x.OperatingSystem.Name)
+                                              .ToListAsync();
         }
     }
 }

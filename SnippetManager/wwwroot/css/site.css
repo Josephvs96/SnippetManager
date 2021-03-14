@@ -207,7 +207,7 @@ app {
 
     .monaco-editor-container {
         height: 300px;
-        width: 580px;
+        width: 500px;
         border: 1px solid gray;
     }
 
@@ -220,10 +220,20 @@ app {
     }
 }
 
-@media (min-width: 800px) {
+@media (min-width: 900px) {
     app {
         flex-direction: row;
         height: 99.9vh;
+    }
+
+    .main .top-row > a, .main .top-row .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+    }
+
+    .main .top-row a:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .main .top-row.auth {
@@ -257,8 +267,69 @@ app {
     }
 
     .monaco-editor-container {
-        height: 300px;
-        width: 768px;
+        height: 450px;
+        width: 600px;
+        border: 1px solid gray;
+    }
+
+    .decorationGlyphMarginClass {
+        background: red;
+    }
+
+    .decorationContentClass {
+        background: lightblue;
+    }
+}
+
+@media (min-width: 1210px) {
+    app {
+        flex-direction: row;
+        height: 99.9vh;
+    }
+
+    .main .top-row > a, .main .top-row .btn-link {
+        white-space: nowrap;
+        margin-left: 1.5rem;
+    }
+
+    .main .top-row a:first-child {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .main .top-row.auth {
+        justify-content: flex-end;
+    }
+
+    .sidebar {
+        width: 250px;
+        height: 100vh;
+        position: sticky;
+        top: 0;
+    }
+
+    .main .top-row {
+        position: sticky;
+        top: 0;
+    }
+
+    .main > div {
+        padding-left: 2rem !important;
+        padding-right: 1.5rem !important;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .sidebar .collapse {
+        /* Never collapse the sidebar for wide screens */
+        display: block;
+    }
+
+    .monaco-editor-container {
+        height: 450px;
+        width: 1000px;
         border: 1px solid gray;
     }
 

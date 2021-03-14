@@ -13,6 +13,8 @@ namespace SnippetManagerData.Models
         public string Code { get; set; }
         [Required]
         public EnvironmentModel Environment { get; set; }
+        [Required]
+        public OSModel OperatingSystem { get; set; }
         [MaxLength(128)]
         public string UserID { get; set; }
     }

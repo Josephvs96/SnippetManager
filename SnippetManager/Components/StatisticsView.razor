@@ -1,0 +1,29 @@
+﻿@inject StatisticsService statistics
+
+<MudContainer Fixed="true" Style=" position:relative;">
+    <MudGrid>
+        <MudItem md="12">
+            <MudGrid Spacing="2" Justify="Justify.FlexStart">
+                <MudItem>
+                    <MudPaper Class="pa-4">
+                        <MudText Align="Align.Left" Typo="Typo.h6" GutterBottom="true" Color="Color.Primary">Operating Systems</MudText>
+                        <MudChart ChartType="ChartType.Pie" Width="300px" Height="300px" InputData="@data" InputLabels="@osNames"></MudChart>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code{
+    private string[] osNames;
+    private double[] data;
+
+    protected override void OnInitialized()
+    {
+        statistics.PopulateData();
+        osNames = statistics.includedOS.Keys.ToArray();
+        data = statistics.includedOS.Values.ToArray();
+    }
+}
+

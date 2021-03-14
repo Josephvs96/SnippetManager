@@ -10,6 +10,8 @@ using SnippetManager.Areas.Identity;
 using SnippetManager.Data;
 using MudBlazor.Services;
 using SnippetManagerData.Data;
+using SnippetManager.Helpers;
+
 namespace SnippetManager
 {
     public class Startup
@@ -46,9 +48,12 @@ namespace SnippetManager
 
             services.AddScoped<ISnippetDataAccess, SnippetDataAccess>();
             services.AddScoped<IEnvironmentsDataAccess, EnvironmentsDataAccess>();
+            services.AddScoped<IOSdataAccess, OSdataAccess>();
+
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddMudServices();
-            services.AddScoped<ClipboardService>();
+            services.AddTransient<ClipboardService>();
+            services.AddScoped<StatisticsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

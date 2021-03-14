@@ -1,0 +1,174 @@
+﻿@inject IEnvironmentsDataAccess _env
+@inject IOSdataAccess _os
+@inject ISnippetDataAccess _snippet
+@inject AuthenticationStateProvider context
+@inject UserManager<IdentityUser> UserManager
+@inject ISnackbar Snackbar
+
+<div class="d-flex justify-content-center align-items-center">
+    <MudForm @ref="form">
+        <MudFocusTrap DefaultFocus="DefaultFocus.Element">
+            <MudCard>
+                <MudCardContent Style="width:400px;">
+
+                    <MudTextField @ref="field" Lines="3" AutoFocus="true" Error="true" Variant="Variant.Text" @bind-Value="snippetDescription" T="string"
+                                  Label="Snippet Descripetion" Required="true" RequiredError="Please enter a valid description for your code" />
+                    <MudAutocomplete T="string" Label="Environments" Error="true" @bind-Value="sellectedEnv" SearchFunc="@EnvSearch" Required="true"
+                                     RequiredError="Please choose a valid environment" ResetValueOnEmptyText="true" CoerceText="true" />
+                    <MudAutocomplete T="string" Label="Operating Systems" Error="true" @bind-Value="sellectedOS" SearchFunc="@OsSearch" Required="true"
+                                     RequiredError="Please choose a valid operating system" ResetValueOnEmptyText="true" CoerceText="true" />
+                    <MudCardActions Style="margin-top:5px;">
+                        <div class=" container-fluid">
+                            <div class="row d-flex justify-content-center align-items-center">
+                                <MudButton StartIcon="@Icons.Material.Filled.Code" Color="Color.Success" Variant="Variant.Filled" OnClick="ToggleOverlay">Snippet Code</MudButton>
+                            </div>
+                            <div class="row d-flex justify-content-center align-items-center">
+                                <MudText Style="font-size:small" Color="@Color.Error">@error</MudText>
+                            </div>
+                        </div>
+                    </MudCardActions>
+
+                </MudCardContent>
+            </MudCard>
+            <MudPaper Class="pa-4 justify-center my-4 mud-text-align-center">
+                <MudButton @onfocusin="Validate" OnClick="AddSnippet" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Add Snippet</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="ClearForm" Class="mx-2">Reset</MudButton>
+            </MudPaper>
+        </MudFocusTrap>
+        <MudOverlay @bind-Visible="isVisible" Absolute="true" DarkBackground="true" AutoClose="false" ZIndex="1">
+            <MudDivider Class="m-2"></MudDivider>
+            <MonacoEditor CssClass="editor-css-class" @ref="editor" Id="code-editor" ConstructionOptions="EditorConstructionOptions"></MonacoEditor>
+            <MudDivider Class="m-2"></MudDivider>
+            <div class="input-group d-flex justify-content-center">
+                <MudChip Color="Color.Primary" OnClick="ToggleOverlay">Save and Close</MudChip>
+            </div>
+        </MudOverlay>
+    </MudForm>
+</div>
+
+
+@code{
+    private string userID;
+    MudForm form;
+    MudTextField<string> field;
+    List<EnvironmentModel> environments;
+    List<OSModel> os;
+    private string sellectedEnv;
+    private string sellectedOS;
+    private string snippetDescription;
+    private SnippetModel snippet;
+    private MonacoEditor editor { get; set; } = new MonacoEditor();
+    private string code = "";
+    private bool isVisible;
+    private string error = "";
+
+    [Parameter]
+    public EventCallback OnSnippetAdded { get; set; }
+
+    public async Task ToggleOverlay()
+    {
+        code = await editor.GetValue();
+        isVisible = !isVisible;
+        StateHasChanged();
+    }
+
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
+    {
+        return new StandaloneEditorConstructionOptions
+        {
+            AutomaticLayout = false,
+            Theme = "vs",
+            Language = "csharp",
+            GlyphMargin = true,
+            AutoIndent = true,
+            Contextmenu = true,
+            FormatOnType = true,
+            SmoothScrolling = true,
+            ScrollBeyondLastLine = false,
+            DetectIndentation = true,
+            Minimap = new EditorMinimapOptions { Enabled = false },
+            SelectionClipboard = true,
+        };
+    }
+
+    private void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            error = "Please enter a code before adding the snippet!";
+        }
+        else
+        { error = ""; }
+        form.Validate();
+    }
+
+    private void ClearForm()
+    {
+        editor.SetValue(string.Empty);
+        code = "";
+        snippet = null;
+        snippetDescription = "";
+        sellectedEnv = "";
+        sellectedOS = "";
+        error = "";
+        field.Reset();
+        form.Reset();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = UserManager.GetUserId(context.GetAuthenticationStateAsync().Result.User);
+        environments = await _env.GetEnvironmetnsById(userID);
+        os = await _os.GetOSById(userID);
+
+        Snackbar.Configuration.SnackbarVariant = Variant.Filled;
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+    }
+
+    private async Task<IEnumerable<string>> EnvSearch(string value)
+    {
+        var output = environments.Select(x => x.Name).ToList();
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return output;
+        return output.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task<IEnumerable<string>> OsSearch(string value)
+    {
+        var output = os.Select(x => x.Name).ToList();
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return output;
+        return output.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase));
+    }
+
+    private async Task AddSnippet()
+    {
+
+        Validate();
+        if (form.IsValid && !string.IsNullOrWhiteSpace(code))
+        {
+            snippet = new SnippetModel();
+            snippet.Code = code;
+            snippet.Name = snippetDescription;
+            snippet.Environment = environments.Where(x => x.Name == sellectedEnv).First();
+            snippet.OperatingSystem = os.Where(x => x.Name == sellectedOS).First();
+            snippet.UserID = userID;
+            try
+            {
+                await _snippet.AddSnippet(snippet);
+                Snackbar.Add("Snippet Added successully", Severity.Success);
+                ClearForm();
+                await OnSnippetAdded.InvokeAsync();
+            }
+            catch (Exception)
+            {
+                Snackbar.Add("Opps! Someting wrong happend", Severity.Error);
+            }
+        }
+    }
+}

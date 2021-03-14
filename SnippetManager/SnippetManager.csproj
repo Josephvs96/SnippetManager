@@ -24,4 +24,8 @@
     <ProjectReference Include="..\SnippetManagerData\SnippetManagerData.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tools\" />
+  </ItemGroup>
+
 </Project>

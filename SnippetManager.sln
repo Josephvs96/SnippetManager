@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.31005.135
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnippetManager", "SnippetManager\SnippetManager.csproj", "{0C85323F-526F-4FD7-BA88-732E351AE485}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnippetManagerData", "SnippetManagerData\SnippetManagerData.csproj", "{36DD6048-A500-45CC-B942-3FA5907C15FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnippetManagerData", "SnippetManagerData\SnippetManagerData.csproj", "{36DD6048-A500-45CC-B942-3FA5907C15FC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnippetManagerUnitTest", "..\SnippetManagerUnitTest\SnippetManagerUnitTest.csproj", "{9D923657-4E15-46FB-A333-4FA0F37DD274}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnippetManagerUnitTest", "..\SnippetManagerUnitTest\SnippetManagerUnitTest.csproj", "{9D923657-4E15-46FB-A333-4FA0F37DD274}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

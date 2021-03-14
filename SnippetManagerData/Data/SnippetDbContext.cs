@@ -14,5 +14,6 @@ namespace SnippetManagerData.Data
         }
         public DbSet<SnippetModel> Snippets { get; set; }
         public DbSet<EnvironmentModel> Environments { get; set; }
+        public DbSet<OSModel> OperatingSystems { get; set; }
     }
 }
