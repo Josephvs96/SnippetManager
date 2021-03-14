@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnippetManager", "SnippetMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnippetManagerData", "SnippetManagerData\SnippetManagerData.csproj", "{36DD6048-A500-45CC-B942-3FA5907C15FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SnippetManagerUnitTest", "..\SnippetManagerUnitTest\SnippetManagerUnitTest.csproj", "{9D923657-4E15-46FB-A333-4FA0F37DD274}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
