@@ -202,11 +202,6 @@
         return false;
     }
 
-    private async Task SetValue()
-    {
-        throw new NotImplementedException();
-    }
-
     private async Task GetValue(string code)
     {
         this.code = code;
@@ -239,18 +234,18 @@
         };
     }
 
-    async Task ReadFromClipboard()
-    {
-        // Reading from the clipboard may be denied, so you must handle the exception
-        try
-        {
-            //text = await Clipboard.ReadTextAsync();
-        }
-        catch
-        {
-            Console.WriteLine("Cannot read from clipboard");
-        }
-    }
+    //async Task ReadFromClipboard()
+    //{
+    //    // Reading from the clipboard may be denied, so you must handle the exception
+    //    try
+    //    {
+    //        //text = await Clipboard.ReadTextAsync();
+    //    }
+    //    catch
+    //    {
+    //        Console.WriteLine("Cannot read from clipboard");
+    //    }
+    //}
 
     async Task CopyToClipboard()
     {

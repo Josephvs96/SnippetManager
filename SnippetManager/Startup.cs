@@ -54,6 +54,7 @@ namespace SnippetManager
             services.AddMudServices();
             services.AddTransient<ClipboardService>();
             services.AddScoped<StatisticsService>();
+            services.AddApplicationInsightsTelemetry();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
