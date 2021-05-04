@@ -31,7 +31,6 @@ namespace SnippetManagerData.Data
 
         public async Task AddSnippet(SnippetModel snippet)
         {
-            await Task.Delay(500);
             snippet.id = new Random(snippets[snippets.Count - 1].id).Next(12);
             snippet.UserID = "1";
             snippets.Add(snippet);
@@ -39,30 +38,28 @@ namespace SnippetManagerData.Data
 
         public async Task DeleteSnippet(SnippetModel snippet)
         {
-            await Task.Delay(500);
             snippets.Remove(snippet);
         }
 
         public async Task<List<SnippetModel>> GetAllSnippets()
         {
-            await Task.Delay(500);
             return snippets.ToList();
         }
 
-        public Task<List<string>> GetOSinSnippetsById(string id)
+        public async Task<List<string>> GetOSinSnippetsById(string id)
         {
-            throw new NotImplementedException();
+            return snippets.Where(snippet => snippet.UserID == "1")
+                                             .Select(x => x.OperatingSystem.Name)
+                                             .ToList();
         }
 
         public async Task<List<SnippetModel>> GetSnippetsById(string id)
         {
-            await Task.Delay(500);
             return snippets.Where(x => x.UserID == "1").ToList();
         }
 
         public async Task UpdateSnippet(SnippetModel snippet)
         {
-            await Task.Delay(500);
             snippets.RemoveAll(x => x.id == snippet.id);
             snippets.Add(snippet);
         }

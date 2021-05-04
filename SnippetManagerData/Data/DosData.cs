@@ -37,13 +37,11 @@ namespace SnippetManagerData.Data
 
         public async Task<List<OSModel>> GetAllOS()
         {
-            await Task.Delay(500);
             return os.ToList();
         }
 
         public async Task<List<OSModel>> GetOSById(string id)
         {
-            await Task.Delay(500);
             return os.ToList();
         }
     }

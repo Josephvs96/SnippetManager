@@ -14,15 +14,11 @@ namespace SnippetManager.Helpers
     {
         private readonly IOSdataAccess _osDb;
         private readonly ISnippetDataAccess _snippetDb;
-        private readonly UserManager<IdentityUser> _user;
-        private readonly AuthenticationStateProvider _context;
 
-        public StatisticsService(IOSdataAccess os, ISnippetDataAccess snippet, UserManager<IdentityUser> user, AuthenticationStateProvider context)
+        public StatisticsService(IOSdataAccess os, ISnippetDataAccess snippet)
         {
             _osDb = os;
             _snippetDb = snippet;
-            _user = user;
-            _context = context;
         }
 
         private string[] osNames;
@@ -34,8 +30,8 @@ namespace SnippetManager.Helpers
             includedOS = new Dictionary<string, double>();
             GetOsNames();
 
-            var user = _context.GetAuthenticationStateAsync().Result.User;
-            var snippets = _snippetDb.GetOSinSnippetsById(_user.GetUserId(user)).Result;
+
+            var snippets = _snippetDb.GetOSinSnippetsById("1").Result;
             if (snippets is not null)
             {
                 foreach (var os in snippets)
@@ -59,8 +55,7 @@ namespace SnippetManager.Helpers
 
         private void GetOsNames()
         {
-            var user = _context.GetAuthenticationStateAsync().Result.User;
-            List<OSModel> operatingSystems = _osDb.GetOSById(_user.GetUserId(user)).Result;
+            List<OSModel> operatingSystems = _osDb.GetOSById("1").Result;
             if (operatingSystems is not null || operatingSystems.Count != 0)
             {
                 List<string> osInList = new List<string>();

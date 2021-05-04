@@ -36,13 +36,11 @@ namespace SnippetManagerData.Data
 
         public async Task<List<EnvironmentModel>> GetAllEnvironmetns()
         {
-            await Task.Delay(500);
             return env.ToList();
         }
 
         public async Task<List<EnvironmentModel>> GetEnvironmetnsById(string id)
         {
-            await Task.Delay(500);
             return env.ToList();
         }
     }

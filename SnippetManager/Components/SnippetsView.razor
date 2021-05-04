@@ -1,6 +1,5 @@
 ﻿@inject ISnippetDataAccess _sdb
-@inject AuthenticationStateProvider context
-@inject UserManager<IdentityUser> UserManager;
+
 @inject ClipboardService Clipboard
 
 <MudContainer Fixed="true" Style="height:650px; position:relative">
@@ -118,7 +117,7 @@
 </MudContainer>
 @code {
     MudMessageBox mbox { get; set; }
-    private string userID;
+    private string userID = "1";
     private List<SnippetModel> _snippets;
     private string searchString = "";
     private SnippetModel selectedItem = null;
@@ -183,7 +182,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        userID = UserManager.GetUserId(context.GetAuthenticationStateAsync().Result.User);
+        userID = "1";
         _snippets = await _sdb.GetSnippetsById(userID);
     }
 

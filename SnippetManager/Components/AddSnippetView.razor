@@ -1,8 +1,6 @@
 ﻿@inject IEnvironmentsDataAccess _env
 @inject IOSdataAccess _os
 @inject ISnippetDataAccess _snippet
-@inject AuthenticationStateProvider context
-@inject UserManager<IdentityUser> UserManager
 @inject ISnackbar Snackbar
 
 <div class="d-flex justify-content-center align-items-center">
@@ -48,127 +46,126 @@
 
 
 @code{
-private string userID;
-MudForm form;
-MudTextField<string> field;
-List<EnvironmentModel> environments;
-List<OSModel> os;
-private string sellectedEnv;
-private string sellectedOS;
-private string snippetDescription;
-private SnippetModel snippet;
-private MonacoEditor editor { get; set; } = new MonacoEditor();
-private string code = "";
-private bool isVisible;
-private string error = "";
+    private string userID;
+    MudForm form;
+    MudTextField<string> field;
+    List<EnvironmentModel> environments;
+    List<OSModel> os;
+    private string sellectedEnv;
+    private string sellectedOS;
+    private string snippetDescription;
+    private SnippetModel snippet;
+    private MonacoEditor editor { get; set; } = new MonacoEditor();
+    private string code = "";
+    private bool isVisible;
+    private string error = "";
 
-[Parameter]
-public EventCallback OnSnippetAdded { get; set; }
+    [Parameter]
+    public EventCallback OnSnippetAdded { get; set; }
 
-public async Task ToggleOverlay()
-{
-    code = await editor.GetValue();
-    isVisible = !isVisible;
-    StateHasChanged();
-}
-
-private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
-{
-    return new StandaloneEditorConstructionOptions
+    public async Task ToggleOverlay()
     {
-        AutomaticLayout = false,
-        Theme = "vs",
-        Language = "csharp",
-        GlyphMargin = true,
-        AutoIndent = true,
-        Contextmenu = true,
-        FormatOnType = true,
-        SmoothScrolling = true,
-        ScrollBeyondLastLine = false,
-        DetectIndentation = true,
-        Minimap = new EditorMinimapOptions { Enabled = false },
-        SelectionClipboard = true,
-    };
-}
-
-private void Validate()
-{
-    if (string.IsNullOrWhiteSpace(code))
-    {
-        error = "Please enter a code before adding the snippet!";
+        code = await editor.GetValue();
+        isVisible = !isVisible;
+        StateHasChanged();
     }
-    else
-    { error = ""; }
-    form.Validate();
-}
 
-private void ClearForm()
-{
-    editor.SetValue(string.Empty);
-    code = "";
-    snippet = null;
-    snippetDescription = "";
-    sellectedEnv = "";
-    sellectedOS = "";
-    error = "";
-    field.Reset();
-    form.Reset();
-    StateHasChanged();
-}
-
-protected override async Task OnInitializedAsync()
-{
-    userID = UserManager.GetUserId(context.GetAuthenticationStateAsync().Result.User);
-    environments = await _env.GetEnvironmetnsById(userID);
-    os = await _os.GetOSById(userID);
-
-    Snackbar.Configuration.SnackbarVariant = Variant.Filled;
-    Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
-}
-
-private Task<IEnumerable<string>> EnvSearch(string value)
-{
-    var output = environments.Select(x => x.Name).ToList();
-
-    // if text is null or empty, show complete list
-    if (string.IsNullOrEmpty(value))
-        return Task.FromResult<IEnumerable<string>>(output);
-    return Task.FromResult<IEnumerable<string>>(output.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase)));
-}
-
-private Task<IEnumerable<string>> OsSearch(string value)
-{
-    var output = os.Select(x => x.Name).ToList();
-
-    // if text is null or empty, show complete list
-    if (string.IsNullOrEmpty(value))
-        return Task.FromResult<IEnumerable<string>>(output);
-    return Task.FromResult<IEnumerable<string>>(output.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase)));
-}
-
-private async Task AddSnippet()
-{
-
-    Validate();
-    if (form.IsValid && !string.IsNullOrWhiteSpace(code))
+    private StandaloneEditorConstructionOptions EditorConstructionOptions(MonacoEditor editor)
     {
-        snippet = new SnippetModel();
-        snippet.Code = code;
-        snippet.Name = snippetDescription;
-        snippet.Environment = environments.Where(x => x.Name == sellectedEnv).First();
-        snippet.OperatingSystem = os.Where(x => x.Name == sellectedOS).First();
-        snippet.UserID = userID;
-        try
+        return new StandaloneEditorConstructionOptions
         {
-            await _snippet.AddSnippet(snippet);
-            Snackbar.Add("Snippet Added successully", Severity.Success);
-            ClearForm();
-            await OnSnippetAdded.InvokeAsync();
+            AutomaticLayout = false,
+            Theme = "vs",
+            Language = "csharp",
+            GlyphMargin = true,
+            AutoIndent = true,
+            Contextmenu = true,
+            FormatOnType = true,
+            SmoothScrolling = true,
+            ScrollBeyondLastLine = false,
+            DetectIndentation = true,
+            Minimap = new EditorMinimapOptions { Enabled = false },
+            SelectionClipboard = true,
+        };
+    }
+
+    private void Validate()
+    {
+        if (string.IsNullOrWhiteSpace(code))
+        {
+            error = "Please enter a code before adding the snippet!";
         }
-        catch (Exception)
+        else
+        { error = ""; }
+        form.Validate();
+    }
+
+    private void ClearForm()
+    {
+        editor.SetValue(string.Empty);
+        code = "";
+        snippet = null;
+        snippetDescription = "";
+        sellectedEnv = "";
+        sellectedOS = "";
+        error = "";
+        field.Reset();
+        form.Reset();
+        StateHasChanged();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        userID = "1";
+        environments = await _env.GetEnvironmetnsById(userID);
+        os = await _os.GetOSById(userID);
+
+        Snackbar.Configuration.SnackbarVariant = Variant.Filled;
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+    }
+
+    private Task<IEnumerable<string>> EnvSearch(string value)
+    {
+        var output = environments.Select(x => x.Name).ToList();
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return Task.FromResult<IEnumerable<string>>(output);
+        return Task.FromResult<IEnumerable<string>>(output.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase)));
+    }
+
+    private Task<IEnumerable<string>> OsSearch(string value)
+    {
+        var output = os.Select(x => x.Name).ToList();
+
+        // if text is null or empty, show complete list
+        if (string.IsNullOrEmpty(value))
+            return Task.FromResult<IEnumerable<string>>(output);
+        return Task.FromResult<IEnumerable<string>>(output.Where(x => x.Contains(value, StringComparison.InvariantCultureIgnoreCase)));
+    }
+
+    private async Task AddSnippet()
+    {
+        Validate();
+        if (form.IsValid && !string.IsNullOrWhiteSpace(code))
         {
-            Snackbar.Add("Opps! Someting wrong happend", Severity.Error);
+            snippet = new SnippetModel();
+            snippet.Code = code;
+            snippet.Name = snippetDescription;
+            snippet.Environment = environments.Where(x => x.Name == sellectedEnv).First();
+            snippet.OperatingSystem = os.Where(x => x.Name == sellectedOS).First();
+            snippet.UserID = "1";
+            try
+            {
+                await _snippet.AddSnippet(snippet);
+                Snackbar.Add("Snippet Added successully", Severity.Success);
+                ClearForm();
+                await OnSnippetAdded.InvokeAsync();
+            }
+            catch (Exception)
+            {
+                Snackbar.Add("Opps! Someting wrong happend", Severity.Error);
+            }
         }
     }
-}
 }
