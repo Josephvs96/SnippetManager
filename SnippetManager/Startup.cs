@@ -46,9 +46,9 @@ namespace SnippetManager
             services.AddHttpContextAccessor();
             services.AddScoped<UserManager<IdentityUser>>();
 
-            services.AddScoped<ISnippetDataAccess, SnippetDataAccess>();
-            services.AddScoped<IEnvironmentsDataAccess, EnvironmentsDataAccess>();
-            services.AddScoped<IOSdataAccess, OSdataAccess>();
+            services.AddScoped<ISnippetDataAccess, DDataAccess>();
+            services.AddScoped<IEnvironmentsDataAccess, DEnvData>();
+            services.AddScoped<IOSdataAccess, DosData>();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddMudServices();

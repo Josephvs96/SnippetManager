@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+
 namespace SnippetManagerData.Data
 {
     public interface ISnippetDataAccess

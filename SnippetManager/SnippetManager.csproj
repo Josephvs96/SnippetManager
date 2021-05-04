@@ -22,11 +22,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SnippetManagerData\SnippetManagerData.csproj" />
+    <Folder Include="Tools\" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Tools\" />
+    <ProjectReference Include="..\SnippetManagerData\SnippetManagerData.csproj" />
   </ItemGroup>
 
   <ItemGroup>
