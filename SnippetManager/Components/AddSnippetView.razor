@@ -9,11 +9,11 @@
             <MudCard>
                 <MudCardContent Style="width:400px;">
 
-                    <MudTextField @ref="field" Lines="3" AutoFocus="true" Error="true" Variant="Variant.Text" @bind-Value="snippetDescription" T="string"
+                    <MudTextField @ref="field" Lines="3" AutoFocus="true" Variant="Variant.Text" @bind-Value="snippetDescription" T="string"
                                   Label="Snippet Descripetion" Required="true" RequiredError="Please enter a valid description for your code" />
-                    <MudAutocomplete T="string" Label="Environments" Error="true" @bind-Value="sellectedEnv" SearchFunc="@EnvSearch" Required="true"
+                    <MudAutocomplete T="string" Label="Environments" @bind-Value="sellectedEnv" SearchFunc="@EnvSearch" Required="true"
                                      RequiredError="Please choose a valid environment" ResetValueOnEmptyText="true" CoerceText="true" />
-                    <MudAutocomplete T="string" Label="Operating Systems" Error="true" @bind-Value="sellectedOS" SearchFunc="@OsSearch" Required="true"
+                    <MudAutocomplete T="string" Label="Operating Systems" @bind-Value="sellectedOS" SearchFunc="@OsSearch" Required="true"
                                      RequiredError="Please choose a valid operating system" ResetValueOnEmptyText="true" CoerceText="true" />
                     <MudCardActions Style="margin-top:5px;">
                         <div class=" container-fluid">
@@ -29,7 +29,7 @@
                 </MudCardContent>
             </MudCard>
             <MudPaper Class="pa-4 justify-center my-4 mud-text-align-center">
-                <MudButton @onfocusin="Validate" OnClick="AddSnippet" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Add Snippet</MudButton>
+                <MudButton OnClick="AddSnippet" Variant="Variant.Filled" Color="Color.Primary" Class="ml-auto">Add Snippet</MudButton>
                 <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="ClearForm" Class="mx-2">Reset</MudButton>
             </MudPaper>
         </MudFocusTrap>
@@ -66,6 +66,12 @@
     public async Task ToggleOverlay()
     {
         code = await editor.GetValue();
+
+        if (code == "")
+            error = "Please enter a code before adding the snippet!";
+        else
+            error = "";
+
         isVisible = !isVisible;
         StateHasChanged();
     }
@@ -91,13 +97,14 @@
 
     private void Validate()
     {
+        form.Validate();
         if (string.IsNullOrWhiteSpace(code))
         {
             error = "Please enter a code before adding the snippet!";
         }
         else
         { error = ""; }
-        form.Validate();
+
     }
 
     private void ClearForm()

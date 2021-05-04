@@ -23,45 +23,63 @@ namespace SnippetManagerData.Data
             snippet.id = 1;
             snippet.Name = "Insall Angular";
             snippet.Code = "npm install -g angular-cli";
-            snippet.Environment = new EnvironmentModel { id = 1, Name = "Console" };
+            snippet.Environment = new EnvironmentModel { id = 2, Name = "Console" };
             snippet.OperatingSystem = new OSModel { id = 1, Name = "Windows" };
             snippet.UserID = "1";
             snippets.Add(snippet);
-        }
 
-        public async Task AddSnippet(SnippetModel snippet)
-        {
-            snippet.id = new Random(snippets[snippets.Count - 1].id).Next(12);
+            snippet = new SnippetModel();
+            snippet.id = 2;
+            snippet.Name = "Insall Entity framework in vs-code";
+            snippet.Code = "dotnet add package Microsoft.EntityFrameworkCore.SqlServer";
+            snippet.Environment = new EnvironmentModel { id = 1, Name = "VS Code" };
+            snippet.OperatingSystem = new OSModel { id = 2, Name = "Linux" };
             snippet.UserID = "1";
             snippets.Add(snippet);
         }
 
-        public async Task DeleteSnippet(SnippetModel snippet)
+        public Task AddSnippet(SnippetModel snippet)
+        {
+            if (snippets.Count == 0)
+            {
+                snippet.id = 1;
+            }
+            else
+            {
+                snippet.id = snippets[snippets.Count - 1].id + 1;
+            }
+            snippets.Add(snippet);
+            return Task.CompletedTask;
+        }
+
+        public Task DeleteSnippet(SnippetModel snippet)
         {
             snippets.Remove(snippet);
+            return Task.CompletedTask;
         }
 
-        public async Task<List<SnippetModel>> GetAllSnippets()
+        public Task<List<SnippetModel>> GetAllSnippets()
         {
-            return snippets.ToList();
+            return Task.FromResult(snippets.ToList());
         }
 
-        public async Task<List<string>> GetOSinSnippetsById(string id)
+        public Task<List<string>> GetOSinSnippetsById(string id)
         {
-            return snippets.Where(snippet => snippet.UserID == "1")
+            return Task.FromResult(snippets.Where(snippet => snippet.UserID == "1")
                                              .Select(x => x.OperatingSystem.Name)
-                                             .ToList();
+                                             .ToList());
         }
 
-        public async Task<List<SnippetModel>> GetSnippetsById(string id)
+        public Task<List<SnippetModel>> GetSnippetsById(string id)
         {
-            return snippets.Where(x => x.UserID == "1").ToList();
+            return Task.FromResult(snippets.Where(x => x.UserID == "1").ToList());
         }
 
-        public async Task UpdateSnippet(SnippetModel snippet)
+        public Task UpdateSnippet(SnippetModel snippet)
         {
             snippets.RemoveAll(x => x.id == snippet.id);
             snippets.Add(snippet);
+            return Task.CompletedTask;
         }
     }
 }
