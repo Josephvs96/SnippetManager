@@ -1,6 +1,8 @@
 # SnippetManager
 This blzaor server app will help in saving snippets of code with the ability to have diffrent environments e.g. C#, VSCode, SQL, C++, Java, Python ...
 
+[Demo (without identity)](https://snippetmanager20210504224401.azurewebsites.net/)
+
 The application is using EF.net core with sqlite database in order to store the information.  
 The application is using MUDblazor as components
 
