@@ -10,7 +10,7 @@ The application is using MUDblazor as components
 * Authorization and Authentication using asp.net identity
 * Registration
 * Login in
-* Ability to see the OS that a user have and how many code snippets i each OS
+* Ability to see the OS that a user have and how many code snippets in each OS
 * Ability to add code snippets
 * Ability to view code snippets
 * Ability to edit/delete code snippets
